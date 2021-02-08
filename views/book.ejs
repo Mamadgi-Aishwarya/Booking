@@ -35,6 +35,7 @@
    <span class="doctor_working_hours" ><%= doctor[i].working_hours %></span>
    <%= doctor[i].fees %>
    <%= doctor[i].experience %>
+   <span class="hospital_id" ><%= doctor[i].hospital_id.id %></span>
    <%= doctor[i].hospital_id.name %>
    <%= doctor[i].hospital_id.location %> 
    <button  class="btn btn-success booking_btn" id="<%= i %>">Book</button>
@@ -45,15 +46,18 @@
  let myCalendar;
  let calendarSet=false;
  var ids=document.getElementsByClassName("doctor_id");
- for (i = 0; i < ids.length; i++) {
+  for (i = 0; i < ids.length; i++) {
     ids[i].style.display = 'none';
-}
+  }
+  var hids=document.getElementsByClassName("hospital_id");
+  for (i = 0; i < hids.length; i++) {
+    hids[i].style.display = 'none';
+  }
  var buttons= document.getElementsByClassName("booking_btn");
  for(let i = 0; i <buttons.length; i++) {
    buttons[i].addEventListener("click", function() {
   if (calendarSet == true) {
     $("#myCalendar").remove();
-    $("form").remove();
   }
    var booking_form=` <form action="/booking" method="post" class="book-appointment-form">
     <div id="myCalendar" class="vanilla-calendar" name="Appdate"></div>
@@ -83,25 +87,24 @@
 
 }
 
- var forms=document.getElementsByClassName('book-appointment-form');
-
- for(i=0;i<forms.length;i++){
-   forms[i].addEventListener('submit',function(){
+ function sendSelectedDate(i){
+  document.getElementsByClassName('book-appointment-form')[0].addEventListener('submit',function(e){
     e.preventDefault();
     fetch('/booking', {
     method: 'POST',
     headers: {
-   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
-            name: "John",
-            email: document.getElementById("myCalendar").value
+            doctor_id: document.getElementsByClassName("doctor_id")[i].textContent,
+            hospital_id: document.getElementsByClassName("hospital_id")[i].textContent,
+            date_selected: document.getElementById("myCalendar").value,
+            time_slot: document.querySelector('input[name="selected_slot"]:checked').value
+          })
+   }).then(function(response){ window.location = '/';})
+     .catch(error=>{console.log(error);})
     })
-   });
-    })
- }
-
- function sendSelectedDate(i){
   let date_selected = document.getElementById("myCalendar");
   var working_hours=document.getElementsByClassName("doctor_working_hours")[i].textContent.replace(/AM|PM/g,'');
   console.log(working_hours);
@@ -118,25 +121,31 @@ let endTime = moment(x.closeTime, "hh:mm");
   var d =new Date(date_selected.value).toLocaleDateString('ko-KR').slice(0, -1).replaceAll('. ','-');
   var d_id=document.getElementsByClassName("doctor_id")[i].textContent;
   console.log(d);
+  $("#doctor_form").remove();
   axios.post('/time_slots', {app_date: d,doctor: d_id}).then(function (response) {
-    var $section = $('<div class="col-md-4 doctor_form"></div>');
+    var $section = $('<div class="col-md-4" id="doctor_form"></div>');
     console.log(JSON.parse(response.data.data));
+    console.log($section);
     if(JSON.parse(response.data.data).length == 0 ){
+      console.log("seventeenth");
       while (startTime < endTime) {
-      $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
+      $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
       } 
     }
     else{
   while (startTime < endTime) {
   (JSON.parse(response.data.data)).forEach(function(slot) {
     let slot_start=slot.time_slot.split("-")[0];
+    console.log("other date");
     console.log((parseInt(moment(slot_start, "hh:mm").minutes()) )+" "+parseInt(moment(startTime, "hh:mm").minutes()));
     if(((parseInt(moment(slot_start, "hh:mm").hours())+12 )== parseInt(moment(startTime, "hh:mm").hours())) && (parseInt(moment(slot_start, "hh:mm").minutes()))==parseInt(moment(startTime, "hh:mm").minutes())){
       $section.append(` <label class="disabled"><button type="button" disabled>${slot.time_slot}</button></label>`);
       startTime.add(x.slotInterval, 'minutes');
     }
     else{
-    $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
+    $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" />
+    <label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
+    
   }
   });
   }

@@ -8,9 +8,7 @@ const session = require('express-session');
 const userRouter=require('./Routes/Users');
 const DoctorRouter=require('./Routes/Doctors');
 const AdminRouter=require('./Routes/Admin');
-
-const User=require('./Models/User');
-const Hospital=require('./Models/Hospital');
+var moment = require('moment');
 const Doctor=require('./Models/Doctor');
 const Appointment=require('./Models/Appointment');
 const app = express();
@@ -67,10 +65,23 @@ app.post("/time_slots",function(req,res){
 });
 
 app.post("/booking",function(req,res){
-  console.log("Body  "+ req.body.name);
-  console.log(req.body.selected_slot);
-  res.render("home");
+ // console.log("bodyyyy "+JSON.stringify(req.body))
+ console.log(req.body);
+ var d=moment(req.body.date_selected).format("YYYY-M-D");
+ /* var a=new Appointment({
+  hospital_id:mongoose.Types.ObjectId(req.body.hospital_id),
+  doctor_id:mongoose.Types.ObjectId(req.body.doctor_id),
+  user_id:req.user.id,
+  time_slot:req.body.time_slot,
+  appointment_date:d
+})
+a.save();
+*/
+  res.redirect("/");
 }); 
+
+
+
 
 //var a=new Appointment({hospital_id:mongoose.Types.ObjectId('600d3c106c153f06743eddc1'),doctor_id:mongoose.Types.ObjectId('600d5c5b8508ae1c18114975'),user_id:mongoose.Types.ObjectId('600c58f0de29d424b8e2581e'),time_slot:"2:30-3:30",appointment_date:new Date("2021-2-18")})
 //a.save()

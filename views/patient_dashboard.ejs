@@ -1,15 +1,30 @@
 <%- include('./partials/header');-%>
-<p>Patient Dashboard</p>
 <% data.forEach(function(p) { %>
-    <%= p.doctor_id.doctor_id.name %>
-    <%= p.doctor_id.doctor_id.phone %>
-    <%= p.doctor_id.speciality %>
-    <%= p.doctor_id.working_hours %>
-    <%= p.doctor_id.fees %>
-    <%= p.hospital_id.name %>
-    <%= p.hospital_id.location %>
-    <%= p.appointment_date %>
-    <%= p.time_slot %>
-    <br>
+   
+    <div class="container">
+            <div class="row">
+                <div class="col">
+                 <div class="profile">
+                    <div class="col">
+                        <div class="col">
+                            <h2><%= p.doctor_id.doctor_id.name %> </h2>
+                            <p><strong>Specialisation: </strong> <%= p.doctor_id.speciality %>  </p>
+                            <p><strong>Working hours: </strong><%= p.doctor_id.working_hours %> </p>
+                            <p><strong>Fees: </strong><%= p.doctor_id.fees %></p>
+                            <p><strong>Hospital Name: </strong><%= p.hospital_id.name %></p>
+                            <p><strong>Hospital Location: </strong><%= p.hospital_id.location %></p>
+                            <p><strong>Appointment Date: </strong><%= p.appointment_date %></p>
+                            <p><strong>Time Slot: </strong><%= p.time_slot %></p>
+                                
+                            <button class="btn">Cancel Appointment</button>   
+                        </div>             
+                        
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+
+    
 <% })%>
 <%- include('./partials/footer');-%>

@@ -1,6 +1,6 @@
 <%- include('./partials/header');-%>
 <%- include('./partials/flash');-%>
-<p>New User?Please create an account by registering. &nbsp;<a class="btn btn-outline-success" name="buttons" href="/user/register" role="button">Register</a></p>
+<p>New User?Please click on register. </p>
 <form action="/user/login" method="post">
     <div class="form-group">
       <label for="email">Email address</label>
@@ -8,12 +8,12 @@
       <label for="password">Password</label>
       <div class="input-group mb-3">
         <input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="off" >
-        <div class="input-group-append" >
+        <div class="input-group-append"  >
           <span class="input-group-text" id="password-show"><i id="password-eye" class="fa fa-eye-slash"></i></span>
         </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-success">Login</button>
+    <button type="submit" class="btn">Login</button>
 </form>
 <br>
 <script>

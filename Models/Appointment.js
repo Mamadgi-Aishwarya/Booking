@@ -3,7 +3,7 @@ mongoose.connect("mongodb+srv://Admin:minnu@mongodb01.irdlb.mongodb.net/Booking?
     if (err) {
         console.log('Unable to connect to the server. Please start the server. Error:', err);
     } else {
-        console.log('Connected to Server successfully!');
+        console.log('Connected to Appointment successfully!');
     }
 });
 const Appointment={
