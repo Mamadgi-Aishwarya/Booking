@@ -1,0 +1,84 @@
+<%- include('./partials/header');-%>
+
+<%- include('./partials/flash');-%>
+<form action="/doctor/adddoctor" method="post">
+  <b>
+    <div class="container">
+      <label for="name"><b>Name</b></label>
+      <input type="text" class="form-control mb-3" name="name" id="namedoc" placeholder="Enter name" autocomplete="off">
+      <label for="email">Email address</label>
+      <input type="email" class="form-control mb-3" name="email" id="emaildoc" placeholder="Enter email" autocomplete="off">
+
+      <div class="mb-3">
+        <label for="gender">Gender</label><br>
+        
+        <input name="genderchoice" id="male" value="Male" type="Radio">
+        <label for="male"> Male</label><br>
+        
+        <input name="genderchoice" id="female" value="Female" type="Radio">
+        <label for="female"> Female</label><br><br>
+        
+      </div>
+
+      <label for="password">Password</label>
+      <div class="input-group mb-3">
+        <input type="password" class="form-control mb-3" name="password" id="passworddoc" placeholder="Password" autocomplete="off">
+        
+        <div class="input-group-append" >
+          <span class="input-group-text mb-3" id="password-showdoc"><i id="password-eyedoc" class="fa fa-eye-slash"></i></span>
+        </div>
+      </div>
+
+      <label for="role">Role</label>
+      <input type="text" class="form-control mb-3" name="role" id="roledoc" placeholder="Enter Role" autocomplete="off">
+
+      <label for="phone">Phone Number</label>
+      <input type="text" class="form-control mb-3" name="phone" id="phonedoc" placeholder="Enter phone number" autocomplete="off">
+
+      <label for="speciality">Speciality</label>
+      <input type="text" class="form-control mb-3" name="speciality" id="speciality" placeholder="Enter speciality" autocomplete="off">
+      
+      <label for="experience">Experience</label>
+      <input type="text" class="form-control mb-3" name="experience" id="experiencedoc" placeholder="Enter experience" autocomplete="off">
+
+      <label for="language">Language </label>
+      <input type="text" class="form-control mb-3" name="language" id="languagedoc" placeholder="Enter language" autocomplete="off">
+
+      <label for="qualification">Qualification</label>
+      <input type="text" class="form-control mb-3" name="qualification" id="qualificationdoc" placeholder="Enter qualification" autocomplete="off">
+
+      <label for="working_hours">Working Hours</label>
+      <input type="text" class="form-control mb-3" name="working_hours" id="working_hoursdoc" placeholder="Enter working hours" autocomplete="off">
+      
+      <label for="fees">fee</label>
+      <input type="text" class="form-control mb-3" name="fees" id="feesdoc" placeholder="Enter fees" autocomplete="off">
+
+      <label for="hospitals">Hospital</label>
+      <select name="hospitals" id="hospitals">
+        <option value="600d3c106c153f06743eddc1">Yashoda Hospitals</option>
+        <option value="600fceb53a22c090b3646868">Apollo Hospital</option>
+      </select><br><br>
+
+      <button type="submit" class="btn btn-success mt-4">Register Now</button>
+    
+    </div>
+
+  </b> 
+  </form>
+  <br>
+  <script>
+     document.getElementById("password-showdoc").addEventListener('click',function(){
+    document.getElementById('password-eyedoc').classList="fa fa-eye";
+    document.getElementById('passworddoc').type="text";
+  },false);
+  </script>
+  <%- include('./partials/footer');-%>
+<%/*%>
+<script>
+ var buttons= document.getElementsByClassName("booking_btn");
+ for(let i = 0; i <buttons.length; i++) {
+  buttons[i].addEventListener("click", function() {
+    console.log(this.parentElement);
+  })
+ }
+</script>

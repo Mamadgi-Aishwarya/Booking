@@ -12,7 +12,7 @@ let transporter = nodemailer.createTransport({
         pass: process.env.PASSWORD
     }
   });
-  
+  console.log(user_email);
   // Step 2
   let mailOptions = {
     from: process.env.EMAIL, // TODO: email sender

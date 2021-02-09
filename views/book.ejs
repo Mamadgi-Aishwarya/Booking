@@ -1,4 +1,5 @@
 <%- include('./partials/header');-%>
+<div id="filter">
 <form action="/user/filter" method="post">
   <label for="experience">Experience</label>
   <select name="experience" id="experience">
@@ -12,7 +13,7 @@
     <option value="Male">Male</option>
     <option value="Female">Female</option>
   </select>
-  <label for="doctor"></label>
+  <label for="doctor">Doctor</label>
   <select name="doctor" id="doctor" required>
     <option hidden disabled selected value> -- select an option -- </option>
     <option value="Cardialogist">Cardialogist</option>
@@ -23,23 +24,21 @@
   </select>
   <button type="submit" class="btn btn-success">Filter Data</button>
 </form>
-
+</div>
 <% for(var i=0;i<doctor.length;i++){ %>
-  <div id="details<%= i %>">
+  <div id="details<%= i %>" class="doctors_list">
    <span class="doctor_id" ><%= doctor[i].id %></span>
-   <%= doctor[i].doctor_id['name'] %>
-   <%= doctor[i].speciality %>
-   <%= doctor[i].experience %>
-   <%= doctor[i].gender %>
-   <%= doctor[i].qualification %>
-   <span class="doctor_working_hours" ><%= doctor[i].working_hours %></span>
-   <%= doctor[i].fees %>
-   <%= doctor[i].experience %>
-   <span class="hospital_id" ><%= doctor[i].hospital_id.id %></span>
-   <%= doctor[i].hospital_id.name %>
-   <%= doctor[i].hospital_id.location %> 
+   <strong>Doctor Name: </strong><%= doctor[i].doctor_id['name'] %><br>
+   <strong>Specialisation: </strong><%= doctor[i].speciality %><br>
+   <strong>Experience: </strong><%= doctor[i].experience %><br>
+   <strong>Gender: </strong><%= doctor[i].gender %><br>
+   <strong>Qualification: </strong><%= doctor[i].qualification %><br>
+   <strong>Working Hours: </strong><span class="doctor_working_hours" ><%= doctor[i].working_hours %></span><br>
+   <strong>Doctor Fees: </strong><%= doctor[i].fees %><br>
+   <span class="hospital_id" ><%= doctor[i].hospital_id.id %></span><br>
+   <strong>Hospital Name: </strong><%= doctor[i].hospital_id.name %><br>
+   <strong>Hospital Location: </strong><%= doctor[i].hospital_id.location %><br>
    <button  class="btn btn-success booking_btn" id="<%= i %>">Book</button>
-   <br><br><br>
   </div>
    <% } %>  
 <script>
@@ -58,12 +57,12 @@
    buttons[i].addEventListener("click", function() {
   if (calendarSet == true) {
     $("#myCalendar").remove();
+    $("#doctor_form").remove();
+    $("#submit_booking_btn").remove();
   }
-   var booking_form=` <form action="/booking" method="post" class="book-appointment-form">
-    <div id="myCalendar" class="vanilla-calendar" name="Appdate"></div>
-    <div id="boxes"></div>
-    <button type="submit" class="btn btn-success submit_booking_btn">Confirm</button>
-    </form>`
+  var boxes_id="boxes"+i;
+   var booking_form=' <form action="/booking" method="post" class="book-appointment-form"><div id="myCalendar" class="vanilla-calendar" name="Appdate"></div><div id='+boxes_id+'></div>'+
+    '<button type="submit" class="btn btn-success" id="submit_booking_btn">Confirm</button></form>'
     document.getElementById("details"+i).insertAdjacentHTML( 'beforeend', booking_form);
     createCalendar();
     sendSelectedDate(i);
@@ -121,15 +120,15 @@ let endTime = moment(x.closeTime, "hh:mm");
   var d =new Date(date_selected.value).toLocaleDateString('ko-KR').slice(0, -1).replaceAll('. ','-');
   var d_id=document.getElementsByClassName("doctor_id")[i].textContent;
   console.log(d);
-  $("#doctor_form").remove();
-  axios.post('/time_slots', {app_date: d,doctor: d_id}).then(function (response) {
+   axios.post('/time_slots', {app_date: d,doctor: d_id}).then(function (response) {
     var $section = $('<div class="col-md-4" id="doctor_form"></div>');
     console.log(JSON.parse(response.data.data));
     console.log($section);
     if(JSON.parse(response.data.data).length == 0 ){
       console.log("seventeenth");
       while (startTime < endTime) {
-      $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
+      $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label>`);
+      startTime.subtract(30,'m').format("hh:mm")
       } 
     }
     else{
@@ -144,14 +143,15 @@ let endTime = moment(x.closeTime, "hh:mm");
     }
     else{
     $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" />
-    <label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label><br>`);
-    
+    <label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label>`);
+    startTime.subtract(30,'m').format("hh:mm")
   }
   });
   }
-}
-
-  $('#boxes').html($section);
+ }
+ console.log("section")
+ console.log($section);
+  $('#boxes'+i).html($section);
     }).catch(function(e) {
     console.log(e);
     console.log("Please try again later.");

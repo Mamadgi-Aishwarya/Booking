@@ -16,7 +16,10 @@
                             <p><strong>Appointment Date: </strong><%= p.appointment_date %></p>
                             <p><strong>Time Slot: </strong><%= p.time_slot %></p>
                                 
-                            <button class="btn">Cancel Appointment</button>   
+                             
+                        <form action="/user/<%= p._id %>/delete" method="POST">
+                            <button type="submit" class="btn btn-secondary btn-block" id="edit">Cancel Appointment</button>
+                        </form>    
                         </div>             
                         
                         </div>

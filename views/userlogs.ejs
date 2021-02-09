@@ -1,3 +1,48 @@
-<% doctors.forEach(function(d) { %>
-    <%= d.gender %>
-<% })%>
+<%- include('./partials/header');-%>
+<%- include('./partials/flash');-%>
+<form action="/admin/userlogs" method="post">
+    <table class="container" padding="0%" style="text-align:left">
+        <tr>
+            <th colspan="2">
+                <h1>Admin Portal</h1>
+                <a href="/doctor/adddoctor" class="btn btn-success mb-4">Add Doctor</a>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <label for="Doctorslogs"><h2>DoctorsLogs</h2></label>
+            </td>
+            <td>
+                <label for="Userslogs"><h2>UsersLogs</h2></label>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" height="20%"> 
+                <% doctors.forEach(function(doctor){ %>
+                    <h5 class="text-dark" id="Name"><%= doctor.doctor_id['name'] %></h5>
+                    <label class="text-dark" id="speciality"><%= doctor.speciality %></label><br>
+                    <label class="text-dark" id="experience"><%= doctor.experience %></label><br>
+                    <label class="text-dark" id="gender"><%= doctor.gender %></label><br>
+                    <label class="text-dark" id="language"><%= doctor.language %></label><br>
+                    <label class="text-dark" id="qualification"><%= doctor.qualification %></label><br>
+                    <label class="text-dark" id="working_hours"><%= doctor.working_hours %></label><br>
+                    <label class="text-dark" id="fees"><%= doctor.fees %></label><br>
+                    <label class="text-dark" id="hospital name"><%= doctor.hospital_id['name'] %></label><br>
+                <% }) %>
+            </td>
+            <td width="50%" height="40%">
+                   <% users.forEach(function(user){ %>
+                    <h5 class="text-dark" id="Name"><%= user.name %></h5>
+                    <label class="text-dark" id="email"><%= user.email %></label><br>
+                    <label class="text-dark" id="phone"><%= user.phone %></label><br><br>
+                    <% }) %>
+            </td>
+        </tr>
+    </table>
+</form>
+<%- include('./partials/footer');-%>
+
+<% /* %>
+<p class="text-dark" id="email"><%= doctor.doctor_id['email'] %></p>
+    <p class="text-dark" id="phone"><%= doctor.doctor_id['phone'] %></p>
+<% */ %>

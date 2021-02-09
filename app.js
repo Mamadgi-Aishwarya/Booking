@@ -11,6 +11,9 @@ const AdminRouter=require('./Routes/Admin');
 var moment = require('moment');
 const Doctor=require('./Models/Doctor');
 const Appointment=require('./Models/Appointment');
+const Hospital=require('./Models/Hospital');
+const mail=require('./Mail');
+
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -64,20 +67,21 @@ app.post("/time_slots",function(req,res){
   }).catch(err=>   req.flash('error',"Something went wrong!Try again!"))
 });
 
-app.post("/booking",function(req,res){
+app.post("/booking",async function(req,res){
  // console.log("bodyyyy "+JSON.stringify(req.body))
  console.log(req.body);
- var d=moment(req.body.date_selected).format("YYYY-M-D");
- /* var a=new Appointment({
+ var d=moment(new Date(req.body.date_selected)).format("YYYY-M-D");
+ console.log(d);
+  var a=new Appointment({
   hospital_id:mongoose.Types.ObjectId(req.body.hospital_id),
   doctor_id:mongoose.Types.ObjectId(req.body.doctor_id),
   user_id:req.user.id,
   time_slot:req.body.time_slot,
   appointment_date:d
 })
-a.save();
-*/
-  res.redirect("/");
+await a.save().then(console.log("succcesss")).catch(err=>{console.log(err)});
+await mail(req,res,req.user.email,'Your appointment is confirmed on '+d+' at '+ req.body.time_slot +'. Have a nice day!',"Appointment booked successfully",'/user/dashboard',"Appointment not booked.Please retry again",'/booking');  
+  res.redirect("/user/dashboard");
 }); 
 
 

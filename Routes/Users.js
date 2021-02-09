@@ -6,6 +6,7 @@ const passport = require("passport");
 const User=require('../Models/User');
 const Doctor=require('../Models/Doctor');
 const Appointment=require('../Models/Appointment');
+const Hospital=require('../Models/Hospital');
 const auth=require('../Authentication/authenticate');
 const mail=require('../Mail');
 require('dotenv').config();
@@ -95,7 +96,22 @@ UserRouter.route("/filter").post(async function(req,res){
     res.render("book",{doctor:doctors});
   }).catch(err=>   req.flash('error',"Something went wrong!Try again!"));
 }
-})
+});
+
+UserRouter.route("/:AppId/delete").post(auth.checkAuthenticated,async function(req,res){
+  const requestedTitle=sanitize(req.params.AppId);
+  console.log("hiiii delete"+requestedTitle);
+  var user_email;
+   Appointment.find({_id:requestedTitle}).populate('doctor_id').then( function(result,err){
+     user_email=result[0].user_id.email;
+     console.log("email "+user_email);
+   Appointment.deleteOne({_id:requestedTitle}).then(function(r,err){console.log("Success deleted")}).catch(err=> req.flash('error',"App not deleted"));
+    console.log(req.user.email+","+user_email);
+   mail(req,res,req.user.email+","+user_email,'Your appointment on '+d+' at '+ req.body.time_slot +' is cancelled.',"Appointment cancelled successfully",'/doctor/dashboard',"Appointment not cancelled.Please retry again",'/doctor/dashboard');  
+    req.flash('success',"Appointment cancelled successfully!");
+    res.redirect('/doctor/dashboard');
+  }).catch(err=> req.flash('error',"Something went wrong!Try again!"));
+  });
 
 module.exports = UserRouter;
 

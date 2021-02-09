@@ -10,35 +10,47 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/css/vanilla-calendar-min.css">
+<link rel="stylesheet" href="/css/home.css">
 <script src="/js/vanilla-calendar-min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
 </head>
 <body>
-    <nav class="navbar bg-dark navbar-expand-lg navbar-dark">
-      <a class="navbar-brand" href="/"></a>
-      <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="fa fa-navicon" ></i>
-      </button>
-       <ul class="navbar-nav d-none d-lg-block">
-       <li class="nav-item active" id="item">
-        <a class="nav-link" href="/">Home</a>
-       </li>
-       </ul>
-       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-        <%if(!locals.user){%>
-          <li class="nav-item" id="item">
-              <a class="nav-link" href="/user/login">Login</a>
-          </li>
-        <%}%>
-        <%if(locals.user){%>
-          <li class="nav-item" id="item" >
-              <a class="nav-link" href="/user/logout" >Logout</a>
-          </li>
-        <%}%>
-      </ul>
-   </div>
-  </nav>    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light ">
+            <a class="navbar-brand" href="/">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <%if(!locals.user){%>
+                <a class="nav-item nav-link active" href="/user/register">Register <span class="sr-only">(current)</span></a>
+                <% } %>
+                <a class="nav-item nav-link" href=" /user/login">Login</a>
+                <% if(locals.user){ %>
+                  <a class="nav-item nav-link" href=" /user/logout">Logout</a>
+                  <% } %>
+                <%if(locals.user && locals.user.role=="doctor"){%>
+                  <a class="nav-item nav-link" href="/doctor/dashboard">Dashboard</a>
+                <% } %>
+                <%if(locals.user && locals.user.role=="patient"){%>
+                  <a class="nav-item nav-link" href="/user/dashboard">Dashboard</a>
+                <% } %>
+                <%if(locals.user && locals.user.role=="admin"){%>
+                  <a class="nav-item nav-link" href="/admin/userlogs">Dashboard</a>
+                <% } %>
+              </div>
+            </div>
+          </nav>
     <div id="page-container">
       <div id="content-wrap">
-
+        </body>
+          </html>
