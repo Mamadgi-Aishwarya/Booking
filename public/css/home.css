@@ -62,4 +62,21 @@
     #filter{
       border-bottom:2px solid #30D5C8;
     }
-  
+    .grid-container {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto auto;
+     /* background-color: #2196F3;*/
+      padding: 10px;
+    }
+    .grid-item {
+      background-color: #30D5C8;
+      border: 1px solid rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      text-align: center;
+    }
+    .grid-item input{
+    width: 10% !important;
+    }
+    #myCalendar{
+      margin:0%;
+    }

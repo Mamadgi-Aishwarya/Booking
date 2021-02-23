@@ -8,11 +8,6 @@ const session = require('express-session');
 const userRouter=require('./Routes/Users');
 const DoctorRouter=require('./Routes/Doctors');
 const AdminRouter=require('./Routes/Admin');
-var moment = require('moment');
-const Doctor=require('./Models/Doctor');
-const Appointment=require('./Models/Appointment');
-const Hospital=require('./Models/Hospital');
-const mail=require('./Mail');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -52,43 +47,6 @@ app.get("/",function(req,res){
 app.use('/user', userRouter);
 app.use('/doctor', DoctorRouter);
 app.use('/admin', AdminRouter);
-
-app.get("/booking",function(req,res){
-  Doctor.find().populate('doctor_id','name id').populate('hospital_id').then((doctors,err)=>{
-    res.render("book",{doctor:doctors});
-  }).catch(err=>   req.flash('error',"Something went wrong!Try again!"));
-});  
-app.post("/time_slots",function(req,res){
-  console.log(req.body.doctor+" "+req.body.app_date);
-  items=Appointment.find({doctor_id: req.body.doctor, appointment_date: req.body.app_date}).then((slots,err)=>{
-    let data=JSON.stringify(slots);
-    //console.log("data "+data);
-   return res.json({data: data})
-  }).catch(err=>   req.flash('error',"Something went wrong!Try again!"))
-});
-
-app.post("/booking",async function(req,res){
- // console.log("bodyyyy "+JSON.stringify(req.body))
- console.log(req.body);
- var d=moment(new Date(req.body.date_selected)).format("YYYY-M-D");
- console.log(d);
-  var a=new Appointment({
-  hospital_id:mongoose.Types.ObjectId(req.body.hospital_id),
-  doctor_id:mongoose.Types.ObjectId(req.body.doctor_id),
-  user_id:req.user.id,
-  time_slot:req.body.time_slot,
-  appointment_date:d
-})
-await a.save().then(console.log("succcesss")).catch(err=>{console.log(err)});
-await mail(req,res,req.user.email,'Your appointment is confirmed on '+d+' at '+ req.body.time_slot +'. Have a nice day!',"Appointment booked successfully",'/user/dashboard',"Appointment not booked.Please retry again",'/booking');  
-  res.redirect("/user/dashboard");
-}); 
-
-
-
-
-//var a=new Appointment({hospital_id:mongoose.Types.ObjectId('600d3c106c153f06743eddc1'),doctor_id:mongoose.Types.ObjectId('600d5c5b8508ae1c18114975'),user_id:mongoose.Types.ObjectId('600c58f0de29d424b8e2581e'),time_slot:"2:30-3:30",appointment_date:new Date("2021-2-18")})
-//a.save()
 app.listen(3000, function() {
   console.log("Server started on port 3000");
 });

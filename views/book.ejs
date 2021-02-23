@@ -34,8 +34,8 @@
    <strong>Gender: </strong><%= doctor[i].gender %><br>
    <strong>Qualification: </strong><%= doctor[i].qualification %><br>
    <strong>Working Hours: </strong><span class="doctor_working_hours" ><%= doctor[i].working_hours %></span><br>
-   <strong>Doctor Fees: </strong><%= doctor[i].fees %><br>
-   <span class="hospital_id" ><%= doctor[i].hospital_id.id %></span><br>
+   <strong>Doctor Fees: </strong><%= doctor[i].fees %>
+   <span class="hospital_id" ><%= doctor[i].hospital_id.id %></span>
    <strong>Hospital Name: </strong><%= doctor[i].hospital_id.name %><br>
    <strong>Hospital Location: </strong><%= doctor[i].hospital_id.location %><br>
    <button  class="btn btn-success booking_btn" id="<%= i %>">Book</button>
@@ -89,7 +89,7 @@
  function sendSelectedDate(i){
   document.getElementsByClassName('book-appointment-form')[0].addEventListener('submit',function(e){
     e.preventDefault();
-    fetch('/booking', {
+    fetch('/user/booking', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -120,14 +120,14 @@ let endTime = moment(x.closeTime, "hh:mm");
   var d =new Date(date_selected.value).toLocaleDateString('ko-KR').slice(0, -1).replaceAll('. ','-');
   var d_id=document.getElementsByClassName("doctor_id")[i].textContent;
   console.log(d);
-   axios.post('/time_slots', {app_date: d,doctor: d_id}).then(function (response) {
-    var $section = $('<div class="col-md-4" id="doctor_form"></div>');
+   axios.post('/user/time_slots', {app_date: d,doctor: d_id}).then(function (response) {
+    var $section = $('<div id="doctor_form" class="grid-container"></div>');
     console.log(JSON.parse(response.data.data));
     console.log($section);
     if(JSON.parse(response.data.data).length == 0 ){
       console.log("seventeenth");
       while (startTime < endTime) {
-      $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label>`);
+      $section.append(`<span class="grid-item"><input type="radio" name="selected_slot" class="grid-item" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" /><label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label>`);
       startTime.subtract(30,'m').format("hh:mm")
       } 
     }
@@ -137,13 +137,13 @@ let endTime = moment(x.closeTime, "hh:mm");
     let slot_start=slot.time_slot.split("-")[0];
     console.log("other date");
     console.log((parseInt(moment(slot_start, "hh:mm").minutes()) )+" "+parseInt(moment(startTime, "hh:mm").minutes()));
-    if(((parseInt(moment(slot_start, "hh:mm").hours())+12 )== parseInt(moment(startTime, "hh:mm").hours())) && (parseInt(moment(slot_start, "hh:mm").minutes()))==parseInt(moment(startTime, "hh:mm").minutes())){
-      $section.append(` <label class="disabled"><button type="button" disabled>${slot.time_slot}</button></label>`);
+    if(((parseInt(moment(slot_start, "hh:mm").hours())+12 )== parseInt(moment(startTime, "hh:mm").hours())||(parseInt(moment(slot_start, "hh:mm").hours()) )== parseInt(moment(startTime, "hh:mm").hours()) ) && (parseInt(moment(slot_start, "hh:mm").minutes()))==parseInt(moment(startTime, "hh:mm").minutes())){
+      $section.append(`<span class="grid-item"><label class="disabled "><button type="button" disabled>${slot.time_slot}</button></label></span>`);
       startTime.add(x.slotInterval, 'minutes');
     }
     else{
-    $section.append(` <input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" />
-    <label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label>`);
+    $section.append(` <span class="grid-item"><input type="radio" name="selected_slot" value="${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}" />
+    <label>${startTime.format("hh:mm")}-${startTime.add(30,'m').format("hh:mm")}</label></span>`);
     startTime.subtract(30,'m').format("hh:mm")
   }
   });

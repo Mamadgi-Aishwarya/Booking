@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt=require('bcrypt');
+var mongoose = require('mongoose');
 const sanitizeHtml=require('sanitize-html');
 const passport = require("passport");
 const User=require('../Models/User');
@@ -9,6 +10,9 @@ const Appointment=require('../Models/Appointment');
 const Hospital=require('../Models/Hospital');
 const auth=require('../Authentication/authenticate');
 const mail=require('../Mail');
+var moment = require('moment');
+
+
 require('dotenv').config();
 
 const UserRouter = express.Router();
@@ -112,6 +116,43 @@ UserRouter.route("/:AppId/delete").post(auth.checkAuthenticated,async function(r
     res.redirect('/doctor/dashboard');
   }).catch(err=> req.flash('error',"Something went wrong!Try again!"));
   });
+
+  UserRouter.route("/booking").get(auth.checkAuthenticated,function(req,res){
+    Doctor.find().populate('doctor_id','name id').populate('hospital_id').then((doctors,err)=>{
+      res.render("book",{doctor:doctors});
+    }).catch(err=>   req.flash('error',"Something went wrong!Try again!"));
+  }).post(async function(req,res){
+    // console.log("bodyyyy "+JSON.stringify(req.body))
+    console.log(req.body);
+    var d=moment(new Date(req.body.date_selected)).format("YYYY-M-D");
+    console.log(d);
+     var a=new Appointment({
+     hospital_id:mongoose.Types.ObjectId(req.body.hospital_id),
+     doctor_id:mongoose.Types.ObjectId(req.body.doctor_id),
+     user_id:req.user.id,
+     time_slot:req.body.time_slot,
+     appointment_date:d
+   })
+   await a.save().then(console.log("succcesss")).catch(err=>{console.log(err)});
+   await mail(req,res,req.user.email,'Your appointment is confirmed on '+d+' at '+ req.body.time_slot +'. Have a nice day!',"Appointment booked successfully",'/user/dashboard',"Appointment not booked.Please retry again",'/booking');  
+     res.redirect("/user/dashboard");
+   });   
+   UserRouter.route("/time_slots").post(function(req,res){
+    console.log(req.body.doctor+" "+req.body.app_date);
+    items=Appointment.find({doctor_id: req.body.doctor, appointment_date: req.body.app_date}).then((slots,err)=>{
+      let data=JSON.stringify(slots);
+      //console.log("data "+data);
+     return res.json({data: data})
+    }).catch(err=>   req.flash('error',"Something went wrong!Try again!"))
+  });
+  
+  
+  
+  
+  
+  
+  //var a=new Appointment({hospital_id:mongoose.Types.ObjectId('600d3c106c153f06743eddc1'),doctor_id:mongoose.Types.ObjectId('600d5c5b8508ae1c18114975'),user_id:mongoose.Types.ObjectId('600c58f0de29d424b8e2581e'),time_slot:"2:30-3:30",appointment_date:new Date("2021-2-18")})
+  //a.save()
 
 module.exports = UserRouter;
 
